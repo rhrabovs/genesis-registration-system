@@ -120,8 +120,14 @@ public class UserServiceImpl implements UserService {
                 .orElse(null);
     }
 
+
     @Override
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("Uzivatel nebyl nalezen");
+        }
+
         userRepository.deleteById(id);
     }
+
 }
