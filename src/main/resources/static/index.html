@@ -159,6 +159,10 @@
         c_personId.value = "";
     }
 
+    function clearUserForm(){
+        g_id.value = "";
+    }
+
     function clearUpdateForm() {
         u_id.value = "";
         u_name.value = "";
@@ -204,6 +208,8 @@
 
         const res = await fetch(`${API}/${id}?detail=${detail}`);
         await handleResponse(res);
+
+        clearUserForm();
     }
 
     async function getAllUsers() {
