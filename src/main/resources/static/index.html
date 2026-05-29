@@ -141,31 +141,50 @@
 <script>
     const API = "http://localhost:8080/api/v1/users";
 
-    function show(data) {
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    function show(data, isError = false) {
+        const output = document.getElementById("output");
+        output.textContent = JSON.stringify(data, null, 2);
+
+        // Barvy podle výsledku
+        output.style.color = isError ? "#ff4d4d" : "#00ff00";
+
+        // Malá animace
+        output.style.opacity = "0";
+        setTimeout(() => output.style.opacity = "1", 150);
     }
 
     function clearCreateForm() {
-        document.getElementById("c_name").value = "";
-        document.getElementById("c_surname").value = "";
-        document.getElementById("c_personId").value = "";
+        c_name.value = "";
+        c_surname.value = "";
+        c_personId.value = "";
     }
 
     function clearUpdateForm() {
-        document.getElementById("u_id").value = "";
-        document.getElementById("u_name").value = "";
-        document.getElementById("u_surname").value = "";
+        u_id.value = "";
+        u_name.value = "";
+        u_surname.value = "";
     }
 
     function clearDeleteForm() {
-        document.getElementById("d_id").value = "";
+        d_id.value = "";
+    }
+
+    async function handleResponse(res) {
+        const text = await res.text();
+
+        try {
+            const json = JSON.parse(text);
+            show(json, !res.ok);
+        } catch {
+            show({ message: text }, !res.ok);
+        }
     }
 
     async function createUser() {
         const body = {
-            name: document.getElementById("c_name").value,
-            surname: document.getElementById("c_surname").value,
-            personId: document.getElementById("c_personId").value
+            name: c_name.value,
+            surname: c_surname.value,
+            personId: c_personId.value
         };
 
         const res = await fetch(API, {
@@ -174,33 +193,31 @@
             body: JSON.stringify(body)
         });
 
-        const data = await res.json();
-        show(data);
+        await handleResponse(res);
 
-        // Vyčistit formulář
-        clearCreateForm();
+        if (res.ok) clearCreateForm();
     }
 
     async function getUser() {
-        const id = document.getElementById("g_id").value;
-        const detail = document.getElementById("g_detail").value;
+        const id = g_id.value;
+        const detail = g_detail.value;
 
         const res = await fetch(`${API}/${id}?detail=${detail}`);
-        show(await res.json());
+        await handleResponse(res);
     }
 
     async function getAllUsers() {
-        const detail = document.getElementById("ga_detail").value;
+        const detail = ga_detail.value;
 
         const res = await fetch(`${API}?detail=${detail}`);
-        show(await res.json());
+        await handleResponse(res);
     }
 
     async function updateUser() {
         const body = {
-            id: document.getElementById("u_id").value,
-            name: document.getElementById("u_name").value,
-            surname: document.getElementById("u_surname").value
+            id: u_id.value,
+            name: u_name.value,
+            surname: u_surname.value
         };
 
         const res = await fetch(API, {
@@ -209,27 +226,26 @@
             body: JSON.stringify(body)
         });
 
-        const data = await res.json();
-        show(data);
+        await handleResponse(res);
 
-        // Vyčistit formulář
-        clearUpdateForm();
+        if (res.ok) clearUpdateForm();
     }
 
     async function deleteUser() {
-        const id = document.getElementById("d_id").value;
+        const id = d_id.value;
 
         const res = await fetch(`${API}/${id}`, {
             method: "DELETE"
         });
 
-        show({status: res.status, message: "Uživatel smazán (pokud existoval)"});
+        if (res.status === 204) {
+            show({ message: "Uživatel byl smazán." });
+        } else {
+            await handleResponse(res);
+        }
 
-        // Vyčistit formulář
         clearDeleteForm();
     }
 </script>
-
-
 </body>
 </html>
