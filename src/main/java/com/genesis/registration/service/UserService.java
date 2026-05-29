@@ -1,14 +1,23 @@
+
 package com.genesis.registration.service;
 
-import com.genesis.registration.model.User;
+import com.genesis.registration.dto.*;
 
-import java.util.List;
+        import java.util.List;
 
 public interface UserService {
 
-    User createUser(User user);
-    User getUserById(Integer id);
-    List<User> getAllUsers();
-    User updateUser(Integer id, User user);
-    void deleteUser(Integer id);
+    UserDetailDTO createUser(CreateUserDTO dto);
+
+    UserShortDTO getUserByIdShort(Long id);
+
+    UserDetailDTO getUserByIdDetail(Long id);
+
+    List<UserShortDTO> getAllUsersShort();
+
+    List<UserDetailDTO> getAllUsersDetail();
+
+    UserShortDTO updateUser(UpdateUserDTO dto);
+
+    void deleteUser(Long id);
 }
