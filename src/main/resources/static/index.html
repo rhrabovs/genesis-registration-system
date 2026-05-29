@@ -2,94 +2,139 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Genesis Registration System - Frontend</title>
+    <title>Genesis Registration System - Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
-            background: #f4f4f4;
+            margin: 0;
+            background: #eef1f5;
+            display: flex;
+            height: 100vh;
         }
+
+        /* Levý panel – akce */
+        .left-panel {
+            width: 45%;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f7f9fc;
+            border-right: 2px solid #ddd;
+        }
+
+        /* Pravý panel – výsledek */
+        .right-panel {
+            width: 55%;
+            padding: 20px;
+            background: #ffffff;
+        }
+
         h1 {
+            margin-top: 0;
             color: #333;
         }
-        .box {
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
             background: white;
-            padding: 20px;
-            margin-bottom: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 5px #ccc;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
-        input, button, select {
-            padding: 8px;
-            margin: 5px 0;
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #444;
+        }
+
+        input, select, button {
             width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
         }
+
         button {
             background: #007bff;
             color: white;
             border: none;
             cursor: pointer;
-            margin-top: 10px;
         }
+
         button:hover {
             background: #0056b3;
         }
+
         pre {
-            background: #222;
-            color: #0f0;
+            background: #1e1e1e;
+            color: #00ff00;
             padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
+            border-radius: 8px;
+            height: calc(100% - 40px);
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
 
-<h1>Genesis Registration System – Testovací Frontend</h1>
+<div class="left-panel">
+    <h1>Genesis Registration – Dashboard</h1>
 
-<div class="box">
-    <h2>1) Vytvořit uživatele</h2>
-    <input id="c_name" placeholder="Jméno">
-    <input id="c_surname" placeholder="Příjmení">
-    <input id="c_personId" placeholder="PersonID (12 znaků)">
-    <button onclick="createUser()">Vytvořit</button>
+    <div class="grid">
+
+        <div class="card">
+            <h2>1) Vytvořit uživatele</h2>
+            <input id="c_name" placeholder="Jméno">
+            <input id="c_surname" placeholder="Příjmení">
+            <input id="c_personId" placeholder="PersonID (12 znaků)">
+            <button onclick="createUser()">Vytvořit</button>
+        </div>
+
+        <div class="card">
+            <h2>2) Získat uživatele</h2>
+            <input id="g_id" placeholder="ID uživatele">
+            <select id="g_detail">
+                <option value="false">Short</option>
+                <option value="true">Detail</option>
+            </select>
+            <button onclick="getUser()">Získat</button>
+        </div>
+
+        <div class="card">
+            <h2>3) Všichni uživatelé</h2>
+            <select id="ga_detail">
+                <option value="false">Short</option>
+                <option value="true">Detail</option>
+            </select>
+            <button onclick="getAllUsers()">Získat</button>
+        </div>
+
+        <div class="card">
+            <h2>4) Upravit uživatele</h2>
+            <input id="u_id" placeholder="ID">
+            <input id="u_name" placeholder="Jméno">
+            <input id="u_surname" placeholder="Příjmení">
+            <button onclick="updateUser()">Upravit</button>
+        </div>
+
+        <div class="card">
+            <h2>5) Smazat uživatele</h2>
+            <input id="d_id" placeholder="ID uživatele">
+            <button onclick="deleteUser()">Smazat</button>
+        </div>
+
+    </div>
 </div>
 
-<div class="box">
-    <h2>2) Získat uživatele podle ID</h2>
-    <input id="g_id" placeholder="ID uživatele">
-    <select id="g_detail">
-        <option value="false">Short</option>
-        <option value="true">Detail</option>
-    </select>
-    <button onclick="getUser()">Získat</button>
-</div>
-
-<div class="box">
-    <h2>3) Získat všechny uživatele</h2>
-    <select id="ga_detail">
-        <option value="false">Short</option>
-        <option value="true">Detail</option>
-    </select>
-    <button onclick="getAllUsers()">Získat</button>
-</div>
-
-<div class="box">
-    <h2>4) Upravit uživatele</h2>
-    <input id="u_id" placeholder="ID">
-    <input id="u_name" placeholder="Jméno">
-    <input id="u_surname" placeholder="Příjmení">
-    <button onclick="updateUser()">Upravit</button>
-</div>
-
-<div class="box">
-    <h2>5) Smazat uživatele</h2>
-    <input id="d_id" placeholder="ID uživatele">
-    <button onclick="deleteUser()">Smazat</button>
-</div>
-
-<div class="box">
-    <h2>Výsledek</h2>
+<div class="right-panel">
+    <h2>Výsledek API</h2>
     <pre id="output">Zde se zobrazí odpověď API...</pre>
 </div>
 
@@ -98,6 +143,22 @@
 
     function show(data) {
         document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    function clearCreateForm() {
+        document.getElementById("c_name").value = "";
+        document.getElementById("c_surname").value = "";
+        document.getElementById("c_personId").value = "";
+    }
+
+    function clearUpdateForm() {
+        document.getElementById("u_id").value = "";
+        document.getElementById("u_name").value = "";
+        document.getElementById("u_surname").value = "";
+    }
+
+    function clearDeleteForm() {
+        document.getElementById("d_id").value = "";
     }
 
     async function createUser() {
@@ -113,7 +174,11 @@
             body: JSON.stringify(body)
         });
 
-        show(await res.json());
+        const data = await res.json();
+        show(data);
+
+        // Vyčistit formulář
+        clearCreateForm();
     }
 
     async function getUser() {
@@ -144,7 +209,11 @@
             body: JSON.stringify(body)
         });
 
-        show(await res.json());
+        const data = await res.json();
+        show(data);
+
+        // Vyčistit formulář
+        clearUpdateForm();
     }
 
     async function deleteUser() {
@@ -155,8 +224,12 @@
         });
 
         show({status: res.status, message: "Uživatel smazán (pokud existoval)"});
+
+        // Vyčistit formulář
+        clearDeleteForm();
     }
 </script>
+
 
 </body>
 </html>
