@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Genesis Registration System API",
+    "_postman_id": "c1f2e1b0-1234-4a55-9c88-abcdef123456",
+    "description": "API kolekce pro registracni system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jan\",\n  \"surname\": \"Novak\",\n  \"personId\": \"sL4gN9dC3bXz\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users"]
+        }
+      }
+    },
+    {
+      "name": "Get User (short)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users", "1"]
+        }
+      }
+    },
+    {
+      "name": "Get User (detail)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users/1?detail=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users", "1"],
+          "query": [
+            { "key": "detail", "value": "true" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All Users (short)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users"]
+        }
+      }
+    },
+    {
+      "name": "Get All Users (detail)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users?detail=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users"],
+          "query": [
+            { "key": "detail", "value": "true" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"name\": \"Jan\",\n  \"surname\": \"Novotny\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users"]
+        }
+      }
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8080/api/v1/users/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "users", "1"]
+        }
+      }
+    }
+  ]
+}
