@@ -1,6 +1,10 @@
 package com.genesis.registration.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -8,28 +12,40 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    @NotBlank(message = "Jmeno musi byt vyplneno")
+    @Column(nullable = false)
     private String name;
+
+    @NotBlank(message = "Prijmeni musi byt vyplneno")
+    @Column(nullable = false)
     private String surname;
 
-    @Column(length = 12, unique = true, nullable = false
+    @NotBlank(message = "person ID musi byt vyplneno")
+    @Column(name = "person_id", nullable = false, unique = true, length = 12 )
     private String personId;
 
-    public User()) {}
+    @Column(nullable = false, unique = true)
+    private String uuid;
 
-    public User(String name, String surname, String personId){
-        this.name;
-        this.surname;
-        this.personId;
+    public User() {}
+
+    public User(String name, String surname, String personId, String uuid){
+        this.name = name;
+        this.surname = surname;
+        this.personId = personId;
+        this.uuid = uuid;
     }
 
     // getters, setters
 
-    public Integer getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,5 +71,20 @@ public class User {
 
     public void setPersonId(String personId) {
         this.personId = personId;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    @PrePersist
+    public void generateUuid(){
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID().toString();
+        }
     }
 }
