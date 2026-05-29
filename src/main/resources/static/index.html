@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Genesis Registration System - Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px #ccc;
+        }
+        input, button, select {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Genesis Registration System – Testovací Frontend</h1>
+
+<div class="box">
+    <h2>1) Vytvořit uživatele</h2>
+    <input id="c_name" placeholder="Jméno">
+    <input id="c_surname" placeholder="Příjmení">
+    <input id="c_personId" placeholder="PersonID (12 znaků)">
+    <button onclick="createUser()">Vytvořit</button>
+</div>
+
+<div class="box">
+    <h2>2) Získat uživatele podle ID</h2>
+    <input id="g_id" placeholder="ID uživatele">
+    <select id="g_detail">
+        <option value="false">Short</option>
+        <option value="true">Detail</option>
+    </select>
+    <button onclick="getUser()">Získat</button>
+</div>
+
+<div class="box">
+    <h2>3) Získat všechny uživatele</h2>
+    <select id="ga_detail">
+        <option value="false">Short</option>
+        <option value="true">Detail</option>
+    </select>
+    <button onclick="getAllUsers()">Získat</button>
+</div>
+
+<div class="box">
+    <h2>4) Upravit uživatele</h2>
+    <input id="u_id" placeholder="ID">
+    <input id="u_name" placeholder="Jméno">
+    <input id="u_surname" placeholder="Příjmení">
+    <button onclick="updateUser()">Upravit</button>
+</div>
+
+<div class="box">
+    <h2>5) Smazat uživatele</h2>
+    <input id="d_id" placeholder="ID uživatele">
+    <button onclick="deleteUser()">Smazat</button>
+</div>
+
+<div class="box">
+    <h2>Výsledek</h2>
+    <pre id="output">Zde se zobrazí odpověď API...</pre>
+</div>
+
+<script>
+    const API = "http://localhost:8080/api/v1/users";
+
+    function show(data) {
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function createUser() {
+        const body = {
+            name: document.getElementById("c_name").value,
+            surname: document.getElementById("c_surname").value,
+            personId: document.getElementById("c_personId").value
+        };
+
+        const res = await fetch(API, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        });
+
+        show(await res.json());
+    }
+
+    async function getUser() {
+        const id = document.getElementById("g_id").value;
+        const detail = document.getElementById("g_detail").value;
+
+        const res = await fetch(`${API}/${id}?detail=${detail}`);
+        show(await res.json());
+    }
+
+    async function getAllUsers() {
+        const detail = document.getElementById("ga_detail").value;
+
+        const res = await fetch(`${API}?detail=${detail}`);
+        show(await res.json());
+    }
+
+    async function updateUser() {
+        const body = {
+            id: document.getElementById("u_id").value,
+            name: document.getElementById("u_name").value,
+            surname: document.getElementById("u_surname").value
+        };
+
+        const res = await fetch(API, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        });
+
+        show(await res.json());
+    }
+
+    async function deleteUser() {
+        const id = document.getElementById("d_id").value;
+
+        const res = await fetch(`${API}/${id}`, {
+            method: "DELETE"
+        });
+
+        show({status: res.status, message: "Uživatel smazán (pokud existoval)"});
+    }
+</script>
+
+</body>
+</html>
